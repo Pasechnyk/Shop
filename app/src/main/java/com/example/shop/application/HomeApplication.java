@@ -14,7 +14,7 @@ public class HomeApplication extends Application {
         super.onCreate();
         appContext=getApplicationContext();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Log.i("krot", "Init HomeApplication");
+        //Log.i("krot", "Init HomeApplication");
     }
 
     public static Context getAppContext() { return appContext; }
