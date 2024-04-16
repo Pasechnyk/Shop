@@ -6,6 +6,9 @@ public class CategoryItemDTO {
     private String name;
     private String description;
 
+    // Додала зображення
+    private String imageUrl;
+
     public int getId() {
         return id;
     }
@@ -28,5 +31,13 @@ public class CategoryItemDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

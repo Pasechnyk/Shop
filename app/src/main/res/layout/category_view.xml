@@ -28,6 +28,13 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="0dp">
 
+            <ImageView
+                android:id="@+id/categoryImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="TODO" />
+
             <TextView
                 android:id="@+id/categoryName"
                 android:layout_width="match_parent"

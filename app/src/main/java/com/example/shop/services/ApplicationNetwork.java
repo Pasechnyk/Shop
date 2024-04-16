@@ -8,17 +8,16 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-// Retrofit set-up
+// Налаштування Retrofit
 public class ApplicationNetwork {
     private static ApplicationNetwork instance;
-
     private Retrofit retrofit;
 
-    public ApplicationNetwork() {
-        HttpLoggingInterceptor interceptor =  new  HttpLoggingInterceptor ();
-        interceptor.setLevel( HttpLoggingInterceptor.Level.BODY );
+    private ApplicationNetwork() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient.Builder client =  new  OkHttpClient.Builder ()
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor);
 
         retrofit = new Retrofit.Builder()
@@ -29,12 +28,17 @@ public class ApplicationNetwork {
     }
 
     public static ApplicationNetwork getInstance() {
-        if(instance==null)
+        if(instance == null)
             instance = new ApplicationNetwork();
         return instance;
     }
 
     public CategoriesApi getCategoriesApi() {
         return retrofit.create(CategoriesApi.class);
+    }
+
+    // Авторизація
+    public AuthService getAuthService() {
+        return retrofit.create(AuthService.class);
     }
 }

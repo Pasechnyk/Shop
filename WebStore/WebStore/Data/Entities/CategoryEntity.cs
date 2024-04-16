@@ -14,5 +14,6 @@ namespace WebStore.Data.Entities
 
         [StringLength(4000)]
         public string Description { get; set; }
+        public string Image { get; internal set; }
     }
 }
