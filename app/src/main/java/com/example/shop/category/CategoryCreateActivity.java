@@ -50,9 +50,13 @@ public class CategoryCreateActivity extends BaseActivity {
         try {
             String name = tlCategoryName.getEditText().getText().toString().trim();
             String description = tlCategoryDescription.getEditText().getText().toString().trim();
+
+            // Створення DTO об'єкту
             CategoryCreateDTO dto = new CategoryCreateDTO();
             dto.setName(name);
             dto.setDescription(description);
+
+            // API виклик на створення категорії
             ApplicationNetwork.getInstance()
                     .getCategoriesApi()
                     .create(dto)
@@ -70,6 +74,7 @@ public class CategoryCreateActivity extends BaseActivity {
                         @Override
                         public void onFailure(Call<CategoryItemDTO> call, Throwable throwable) {
 
+                            Log.e("--CategoryCreateActivity--", "Failed to create category: " + throwable.getMessage());
                         }
                     });
 
