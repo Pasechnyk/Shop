@@ -64,14 +64,40 @@ namespace WebStore.Controllers
             return Ok(category);
         }
 
-        // Редагування категорії
+        // Редагування категорії з фото
         [HttpPut]
-        public IActionResult Edit([FromBody] CategoryEditViewModel model)
+        public async Task<IActionResult> Edit([FromBody] CategoryEditViewModel model)
         {
             var category = _appContext.Categories.SingleOrDefault(x => x.Id == model.Id);
             if (category == null)
             {
                 return NotFound();
+            }
+            if (model.Image != null)
+            {
+                string? imgDel = category.Image;
+                if (imgDel != null)
+                {
+                    string imgDelPath = Path.Combine(Directory.GetCurrentDirectory(), "images", imgDel);
+                    if (System.IO.File.Exists(imgDelPath))
+                    {
+                        System.IO.File.Delete(imgDelPath);
+                    }
+                }
+                using Image image = Image.Load(model.Image.OpenReadStream());
+                image.Mutate(x =>
+                {
+                    x.Resize(new ResizeOptions
+                    {
+                        Size = new Size(1200),
+                        Mode = ResizeMode.Max
+                    });
+                });
+                string imageName = Path.GetRandomFileName() + ".webp";
+                string dirSaveImage = Path.Combine(Directory.GetCurrentDirectory(), "images", imageName);
+
+                await image.SaveAsync(dirSaveImage, new WebpEncoder());
+                category.Image = imageName;
             }
             category.Description = model.Description;
             category.Name = model.Name;
@@ -79,7 +105,7 @@ namespace WebStore.Controllers
             return Ok(category);
         }
 
-        // Видалення категорії
+        // Видалення категорії з фото
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -87,6 +113,15 @@ namespace WebStore.Controllers
             if (category == null)
             {
                 return NotFound();
+            }
+            string? imgDel = category.Image;
+            if (imgDel != null)
+            {
+                string imgDelPath = Path.Combine(Directory.GetCurrentDirectory(), "images", imgDel);
+                if (System.IO.File.Exists(imgDelPath))
+                {
+                    System.IO.File.Delete(imgDelPath);
+                }
             }
             _appContext.Categories.Remove(category);
             _appContext.SaveChanges();
