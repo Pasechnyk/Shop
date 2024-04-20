@@ -16,6 +16,10 @@ import com.example.shop.services.ApplicationNetwork;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -84,8 +88,8 @@ public class CategoryCreateActivity extends BaseActivity {
     public void onClickSelectImage(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        startActivity(intent);
-        finish();
+        // Початок Activity
+        startActivityForResult(intent, 100);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -98,25 +102,70 @@ public class CategoryCreateActivity extends BaseActivity {
 
     // Завантаження зображення
     private void uploadImage(Uri imageUri) {
-        File file = new File(imageUri.getPath());
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
 
-        ApplicationNetwork.getInstance()
-                .getCategoriesApi()
-                .uploadImage(imagePart)
-                .enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        if (response.isSuccessful()) {
-                            // Handle successful image upload
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            File file = new File(getCacheDir(), "temp_image.jpg");
+            OutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.close();
+            inputStream.close();
+
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+
+            // Отримати деталі категорії
+            String name = tlCategoryName.getEditText().getText().toString().trim();
+            String description = tlCategoryDescription.getEditText().getText().toString().trim();
+
+            // Створення DTO із зображенням
+            CategoryCreateDTO dto = new CategoryCreateDTO();
+            dto.setName(name);
+            dto.setDescription(description);
+
+            ApplicationNetwork.getInstance()
+                    .getCategoriesApi()
+                    .uploadImage(imagePart)
+                    .enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if (response.isSuccessful()) {
+                                // URL Зображення
+                                dto.setImageUrl(response.body());
+
+                                // API виклик на створення категорії
+                                ApplicationNetwork.getInstance()
+                                        .getCategoriesApi()
+                                        .create(dto)
+                                        .enqueue(new Callback<CategoryItemDTO>() {
+                                            @Override
+                                            public void onResponse(Call<CategoryItemDTO> call, Response<CategoryItemDTO> response) {
+                                                if (response.isSuccessful()) {
+                                                    Intent intent = new Intent(CategoryCreateActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<CategoryItemDTO> call, Throwable throwable) {
+                                                Log.e("--CategoryCreateActivity--", "Failed to create category: " + throwable.getMessage());
+                                            }
+                                        });
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<String> call, Throwable throwable) {
-                        Log.e("--CategoryCreateActivity--", "Failed to upload image: " + throwable.getMessage());
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<String> call, Throwable throwable) {
+                            Log.e("--CategoryCreateActivity--", "Failed to upload image: " + throwable.getMessage());
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
