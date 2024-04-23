@@ -48,6 +48,7 @@ public class CategoryCreateActivity extends BaseActivity {
 
     private String filePath;
 
+    // Надання дозволу
     public  boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -67,6 +68,7 @@ public class CategoryCreateActivity extends BaseActivity {
         }
     }
 
+    // Відкриття галереї для вибору зображення
     public void openGallery(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
