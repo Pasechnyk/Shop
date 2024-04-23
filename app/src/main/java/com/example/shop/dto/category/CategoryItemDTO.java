@@ -1,13 +1,12 @@
 package com.example.shop.dto.category;
 
-// JSON answer
 public class CategoryItemDTO {
     private int id;
     private String name;
     private String description;
 
-    // Додала зображення
-    private String imageUrl;
+    // Зображення
+    private String image;
 
     public int getId() {
         return id;
@@ -33,11 +32,11 @@ public class CategoryItemDTO {
         this.description = description;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage(String image) {
+        this.image = image;
     }
 }

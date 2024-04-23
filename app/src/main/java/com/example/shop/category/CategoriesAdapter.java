@@ -8,12 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.shop.R;
+import com.example.shop.constants.Urls;
 import com.example.shop.dto.category.CategoryItemDTO;
 
 import java.util.List;
 
-// Adapter for RecyclerView
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoryCardViewHolder> {
     private List<CategoryItemDTO> items;
 
@@ -37,10 +38,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoryCardViewHold
             holder.getCategoryName().setText(item.getName());
             holder.getCategoryDescription().setText(item.getDescription());
 
-            // Завантаження фото за допомогою Glide
-            Glide.with(holder.itemView.getContext())
-                    .load(item.getImageUrl())
-                    .into(holder.getCategoryImage());
+            // Вивід зображення з Glide
+            String url = Urls.BASE+"/images/"+item.getImage();
+            if(item.getImage().isEmpty())
+                url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk9E4qPio8XHaAkejGVDcy1UrNnT6OaqfqPptyVKdp-ey84M9mOIQemvmaxac9jCInwxk&usqp=CAU";
+            Glide
+                    .with(holder.itemView.getContext())
+                    .load(url)
+                    .into(holder.getIvCategoryImage());
         }
     }
 
