@@ -51,6 +51,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.shop.auth.LoginActivity" />
+        </activity>
+        <activity android:name="com.example.shop.auth.RegisterActivity" />
     </application>
 
 </manifest>
