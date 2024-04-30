@@ -8,6 +8,8 @@ using WebStore.Data.Entities.Identity;
 using WebStore.Interfaces;
 using System;
 using WebStore.Services;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace WebStore.Controllers
 {
@@ -41,32 +43,40 @@ namespace WebStore.Controllers
             return Ok(new { token });
         }
 
-        //[HttpPost("register")]
-        //public IActionResult Register([FromBody] UserCreateModel model)
-        //{
-        //    if (_appContext.Users.Any(u => u.Username == model.Username))
-        //    {
-        //        return BadRequest("Username already exists.");
-        //    }
+        // Реєстрація із зображенням
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm] UserRegisterViewModel model)
+        {
+            if (model == null || model.Image == null)
+                return BadRequest("User data or image is missing.");
 
-        //    if (_appContext.Users.Any(u => u.Email == model.Email))
-        //    {
-        //        return BadRequest("Email already exists.");
-        //    }
+            // Перевірити чи файл є зображенням
+            if (!model.Image.ContentType.StartsWith("image/"))
+                return BadRequest("Uploaded file is not an image.");
 
-        //    var user = new UserEntity
-        //    {
-        //        Username = model.Username,
-        //        Password = model.Password,
-        //        Email = model.Email
+            var user = new UserEntity
+            {
+                UserName = model.Username,
+                Email = model.Email
+            };
 
-        //    };
+            // Конвертація зображення до масиву байтів
+            byte[] imageData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await model.Image.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
 
-        //    _appContext.Users.Add(user);
-        //    _appContext.SaveChanges();
+            user.ImageData = imageData;
 
-        //    return Ok(new { Message = "User registered successfully", UserId = user.Id });
-        //}
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            var token = await _jwtTokenService.CreateToken(user);
+            return Ok(new { token });
+        }
     }
 }
 

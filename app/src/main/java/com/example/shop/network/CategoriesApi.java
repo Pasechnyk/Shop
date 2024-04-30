@@ -1,5 +1,6 @@
 package com.example.shop.network;
 
+import com.example.shop.auth.RegisterResponse;
 import com.example.shop.dto.category.CategoryCreateDTO;
 import com.example.shop.dto.category.CategoryItemDTO;
 
@@ -32,4 +33,5 @@ public interface CategoriesApi {
     public Call<CategoryItemDTO> update(@Path("id") int categoryId,
                                         @PartMap Map<String, RequestBody> params,
                                         @Part MultipartBody.Part image);
+
 }

@@ -42,7 +42,11 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginRequest request = new LoginRequest(username, password);
 
-        ApplicationNetwork.getInstance().getAuthService().login(request).enqueue(new Callback<LoginResponse>() {
+        ApplicationNetwork
+                .getInstance()
+                .getAuthService()
+                .login(request)
+                .enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
