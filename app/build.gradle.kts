@@ -49,4 +49,6 @@ dependencies {
     // retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.4.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.3.0")
+    // https://mvnrepository.com/artifact/com.github.ybq/Android-SpinKit
+    implementation("com.github.ybq:Android-SpinKit:1.4.0")
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebStore.Data.Entities.Identity;
 
 namespace WebStore.Data.Entities
 {
@@ -15,5 +16,10 @@ namespace WebStore.Data.Entities
         [StringLength(4000)]
         public string Description { get; set; }
         public string Image { get; internal set; }
+
+        [ForeignKey("User")]
+        public long? UserId { get; set; }
+        public virtual UserEntity User { get; set; }
+
     }
 }

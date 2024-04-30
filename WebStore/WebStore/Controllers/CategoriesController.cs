@@ -1,20 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
 using WebStore.Data;
 using WebStore.Data.Entities;
+using WebStore.Data.Entities.Identity;
 using WebStore.Models.Categories;
 
 namespace WebStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly MyAppContext _appContext;
 
-        public CategoriesController(MyAppContext appContext)
+        public CategoriesController(MyAppContext appContext, UserManager<UserEntity> userManager,
+        IMapper mapper)
         {
             _appContext = appContext;
         }
@@ -47,7 +53,7 @@ namespace WebStore.Controllers
                 {
                     x.Resize(new ResizeOptions
                     {
-                        Size = new Size(1200),
+                        Size = new Size(1920),
                         Mode = ResizeMode.Max
                     });
                 });
