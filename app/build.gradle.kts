@@ -51,4 +51,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.3.0")
     // https://mvnrepository.com/artifact/com.github.ybq/Android-SpinKit
     implementation("com.github.ybq:Android-SpinKit:1.4.0")
+    // відображення фото користувача
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 }
